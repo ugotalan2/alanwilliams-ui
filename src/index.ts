@@ -4,4 +4,5 @@ export {
     type ThemePreference,
 } from './theme/ThemeContext'
 
+export { ThemeProvider } from './theme/ThemeProvider'
 export { useTheme } from './theme/useTheme'

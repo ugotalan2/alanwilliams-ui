@@ -107,7 +107,7 @@ alanwilliams-ui repository
 GitHub npm Packages
         |
         v
-@alanwilliams/ui
+@ugotalan2/ui
         |
         +--> alanwilliams-platform
         +--> alanwilliams-agenda
@@ -124,18 +124,38 @@ Conceptual consumer dependency:
 ``` json
 {
   "dependencies": {
-    "@alanwilliams/ui": "0.1.0"
+    "@ugotalan2/ui": "0.1.0"
   }
 }
 ```
 
-The exact package version and publishing workflow are repository
-configuration concerns.
+Current package/publishing contract:
+
+-   npm package: `@ugotalan2/ui`
+-   registry: GitHub npm Packages (`https://npm.pkg.github.com`)
+-   package scope follows the GitHub owner `ugotalan2`
+-   package publication runs from the `alanwilliams-ui` repository with its
+    repository `GITHUB_TOKEN` and `packages: write`
+-   consumers authenticate with package-read credentials when GitHub Packages
+    access is required
+
+Package branding and repository naming remain `alanwilliams-ui`; the
+`@ugotalan2` prefix is the GitHub npm registry namespace.
 
 ## Build-Time Dependency Rule
 
 Shared CSS, icons, and React components are bundled into each consuming
 application during its normal frontend build.
+
+Docker consumers install private GitHub npm dependencies using Docker BuildKit
+secrets. Package credentials are mounted only for the dependency-install step,
+used to create temporary npm registry authentication, and removed before the
+step completes. Credentials must not be copied into source-controlled `.npmrc`
+files or baked into application images.
+
+For local AlanWilliams app builds, Compose may source `GITHUB_TOKEN` from the
+existing local env file and expose it to the build as a BuildKit secret. The
+token is build-only and is not a frontend runtime environment variable.
 
 Applications must not depend on runtime delivery of shared CSS or
 JavaScript from `alanwilliams.app`.
@@ -345,15 +365,15 @@ import {
   AppShell,
   AccountMenu,
   agendaTheme,
-} from '@alanwilliams/ui'
+} from '@ugotalan2/ui'
 
-import '@alanwilliams/ui/styles.css'
+import '@ugotalan2/ui/styles.css'
 ```
 
 Avoid:
 
 ``` tsx
-import AppShell from '@alanwilliams/ui/src/components/layout/AppShell'
+import AppShell from '@ugotalan2/ui/src/components/layout/AppShell'
 ```
 
 Internal implementation paths are not part of the compatibility
@@ -397,10 +417,13 @@ active consumers.
 Recommended sequence:
 
 1.  Establish the package, build, exports, and GitHub Packages
-    publishing.
+    publishing. **Complete:** `@ugotalan2/ui@0.1.0` is published.
 2.  Move shared design tokens, base CSS, app themes, and approved icons
-    from Platform into `alanwilliams-ui`.
+    from Platform into `alanwilliams-ui`. **Complete for the initial CSS/assets
+    extraction.**
 3.  Make Platform consume the package and verify no visual regression.
+    **Complete for shared CSS:** Platform consumes `@ugotalan2/ui@0.1.0`;
+    Platform-specific My Profile/My Apps/preview styles remain local.
 4.  Extract/configure reusable shell, header, navigation, and
     account-menu presentation.
 5.  Make Agenda the second consumer.
@@ -457,9 +480,12 @@ Its operational lifecycle is:
 ``` text
 develop
 -> test
--> publish npm package
--> consumer upgrades dependency
--> consumer builds/deploys normally
+-> publish @ugotalan2/ui version to GitHub Packages
+-> consumer pins/upgrades dependency
+-> Docker build authenticates with a BuildKit secret
+-> npm installs the package
+-> consumer bundles shared UI assets/code
+-> consumer deploys normally
 ```
 
 A package publication and an application deployment are separate events.

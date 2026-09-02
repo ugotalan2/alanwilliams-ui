@@ -22,7 +22,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/styles dist/icons && cp src/styles/*.css dist/styles/ && cp src/icons/* dist/icons/",
-    "pack:local": "npm run build && npm pack",
+    "prepack": "npm run build",
+    "pack:local": "npm pack",
     "typecheck": "tsc -p tsconfig.build.json --noEmit"
   },
   "peerDependencies": {
@@ -35,6 +36,10 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "typescript": "~6.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanwilliams/alanwilliams-ui.git"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"

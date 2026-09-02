@@ -1,0 +1,19 @@
+.aw-theme-platform {
+    --app-primary: var(--aw-app-platform);
+}
+
+.aw-theme-agenda {
+    --app-primary: var(--aw-app-agenda);
+}
+
+.aw-theme-budget {
+    --app-primary: var(--aw-app-budget);
+}
+
+.aw-theme-chores {
+    --app-primary: var(--aw-app-chores);
+}
+
+.aw-theme-fitness {
+    --app-primary: var(--aw-app-fitness);
+}

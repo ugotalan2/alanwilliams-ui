@@ -2,6 +2,13 @@
     --aw-navy: #002e5d;
     --aw-royal: #0033a0;
     --aw-royal-light: #4d9de0;
+
+    /* App identities */
+    --aw-app-platform: var(--aw-navy);
+    --aw-app-agenda: var(--aw-royal);
+    --aw-app-budget: #00843d;
+    --aw-app-chores: #c69214;
+    --aw-app-fitness: #c52b29;
 }
 
 :root,

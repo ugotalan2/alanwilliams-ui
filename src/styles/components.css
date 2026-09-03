@@ -343,6 +343,11 @@
     background: var(--aw-surface-raised);
 }
 
+/* ---------- Footer ------------*/
+.aw-footer {
+    background: var(--aw-surface);
+}
+
 /* ---------- Mobile header navigation ---------- */
 
 @media (max-width: 767.98px) {

@@ -18,3 +18,9 @@ export {
     type AppHeaderProps,
     type HeaderNavigationItem,
 } from './components/layout/AppHeader'
+
+export {
+    AppFooter,
+    type AppFooterProps,
+    type AppFooterLink,
+} from './components/layout/AppFooter'

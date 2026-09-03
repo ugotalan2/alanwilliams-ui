@@ -2,259 +2,107 @@
 
 ## Scope
 
-This document is the source of truth for the architecture and ownership
-boundaries of `alanwilliams-ui`.
+This document is the source of truth for `alanwilliams-ui`, the
+versioned shared frontend design-system and React UI library used by
+independently deployable AlanWilliams Apps.
 
-`alanwilliams-ui` is the shared frontend design-system and React UI
-library for the AlanWilliams Apps ecosystem. It is a build-time
-dependency consumed by independently deployable applications such as
-Platform, Agenda, Budget, Chores, Fitness, and future apps.
+Cross-repository identity and integration contracts belong in
+`ALANWILLIAMS_PLATFORM_ARCHITECTURE.md`. Domain routes, permissions, and
+workflows remain app-owned.
 
-Cross-repository platform architecture remains owned by
-`ALANWILLIAMS_PLATFORM_ARCHITECTURE.md`. Application-specific
-navigation, workflows, domain UI, and authorization remain owned by each
-application repository.
+## Principles
 
-## Architecture Principles
-
--   Keep applications independently deployable.
--   Share reusable frontend design and behavior through a versioned npm
-    package rather than copy/paste.
--   Treat `alanwilliams-ui` as the frontend counterpart to
-    `alanwilliams-spring-security`: reusable library code, not a
-    deployed service.
--   Keep shared presentation separate from Platform-owned account data
-    and app-owned domain data.
--   Prefer configurable shared components over app-specific branching
-    inside the library.
--   Keep app identity declarative: app name, icon, accent theme,
-    navigation, and routes are supplied by the consuming app.
--   Package shared assets at build time so an application's runtime does
-    not depend on `alanwilliams.app` being available.
--   Maintain accessibility and responsive behavior in shared components
-    so fixes propagate consistently across apps.
--   Avoid cross-repository source imports, Git submodules, and
-    externally hosted shared CSS as the primary reuse mechanism.
+-   share reusable frontend behavior through a versioned npm package,
+    not copy/paste
+-   keep apps independently deployable
+-   keep presentation separate from Platform account data and app domain
+    data
+-   prefer configurable components over app-specific branching
+-   package assets at build time; no runtime dependency on the Platform
+    frontend
+-   keep authorization in app backends
+-   use Docker for Node/npm build and validation workflows
 
 ## Technology Baseline
 
-The package follows the AlanWilliams Platform frontend baseline:
+React 19.2.x, React Router 7.x, TypeScript 6.x, Vite 8.2.x, Bootstrap
+5.3.x, Font Awesome 7.3.x, Node 24 LTS, npm 11.x.
 
--   React `19.2.x`
--   React Router `7.x` where routing-aware components are provided
--   TypeScript `6.0.x`
--   Vite `8.2.x`
--   Bootstrap `5.3.x`
--   Font Awesome `7.3.x`
--   React Font Awesome `3.x`
--   Node.js `24.x LTS`
--   npm `11.x`
+## Distribution
 
-Exact compatible versions are locked by this repository and its
-consumers. Shared major/minor baseline changes are coordinated with the
-Platform architecture.
+``` text
+alanwilliams-ui
+-> GitHub npm Packages
+-> @ugotalan2/ui
+-> Platform / Agenda / future apps
+```
 
-## Repository Role
+Current proven package version: `0.5.1`.
 
-### `alanwilliams-ui`
+Consumers pin/upgrade deliberately. Package publication and consumer
+deployment are separate events. Private registry credentials are
+build-only and are passed through Docker BuildKit secrets; they are not
+committed or baked into runtime images.
 
-Owns reusable frontend presentation and interaction primitives shared
-across AlanWilliams Apps.
+## Ownership Boundary
 
-Initial ownership includes:
+### Shared UI owns
 
--   design tokens
--   shared typography and spacing conventions
--   shared surface/card styles
--   shared button and form styling
--   shared light/dark appearance mechanics
--   per-app visual theme definitions
--   app icons and shared brand assets
--   reusable application shell components
--   reusable header components
--   reusable account-menu presentation
--   reusable desktop navigation components
--   reusable mobile navigation components
--   responsive layout behavior
--   shared accessibility behavior for those components
+-   semantic design tokens/common CSS
+-   light/dark mechanics
+-   app themes and approved shared assets
+-   reusable header/footer
+-   account-menu and appearance presentation
+-   authenticated app-shell presentation
+-   desktop/mobile navigation rendering
+-   responsive/accessibility behavior
 
-### `alanwilliams-ui` Does Not Own
+### Shared UI does not own
 
--   canonical Person data
--   Clerk-to-Person linkage
--   profile persistence
--   appearance preference persistence
--   My Apps preference persistence
--   onboarding state
--   app memberships
--   app authorization
--   app-specific domain workflows
--   app-specific routes or navigation choices
--   Agenda meetings/questions/assignments
--   Budget financial domain behavior
+-   Clerk authentication state
+-   Platform Person/Profile APIs
+-   persisted appearance/My Apps state
+-   app memberships or authorization
+-   app route tables
+-   Agenda/other domain workflows
 -   backend APIs
 
-Those remain owned by Platform or the appropriate application.
-
-## Distribution Model
-
-`alanwilliams-ui` is distributed as a versioned npm package:
-
-``` text
-alanwilliams-ui repository
-        |
-        v
-GitHub npm Packages
-        |
-        v
-@ugotalan2/ui
-        |
-        +--> alanwilliams-platform
-        +--> alanwilliams-agenda
-        +--> alanwilliams-budget
-        +--> alanwilliams-chores
-        `--> future apps
-```
-
-Consumers install a published package version. They do not copy the
-library source into their repositories.
-
-Conceptual consumer dependency:
-
-``` json
-{
-  "dependencies": {
-    "@ugotalan2/ui": "0.1.0"
-  }
-}
-```
-
-Current package/publishing contract:
-
--   npm package: `@ugotalan2/ui`
--   registry: GitHub npm Packages (`https://npm.pkg.github.com`)
--   package scope follows the GitHub owner `ugotalan2`
--   package publication runs from the `alanwilliams-ui` repository with its
-    repository `GITHUB_TOKEN` and `packages: write`
--   consumers authenticate with package-read credentials when GitHub Packages
-    access is required
-
-Package branding and repository naming remain `alanwilliams-ui`; the
-`@ugotalan2` prefix is the GitHub npm registry namespace.
-
-## Build-Time Dependency Rule
-
-Shared CSS, icons, and React components are bundled into each consuming
-application during its normal frontend build.
-
-Docker consumers install private GitHub npm dependencies using Docker BuildKit
-secrets. Package credentials are mounted only for the dependency-install step,
-used to create temporary npm registry authentication, and removed before the
-step completes. Credentials must not be copied into source-controlled `.npmrc`
-files or baked into application images.
-
-For local AlanWilliams app builds, Compose may source `GITHUB_TOKEN` from the
-existing local env file and expose it to the build as a BuildKit secret. The
-token is build-only and is not a frontend runtime environment variable.
-
-Applications must not depend on runtime delivery of shared CSS or
-JavaScript from `alanwilliams.app`.
-
-This preserves:
-
--   independent deployment
--   predictable version compatibility
--   offline/local development
--   rollback capability
--   isolation from Platform frontend outages
-
-## Package Structure
-
-Target structure:
-
-``` text
-alanwilliams-ui/
-├── src/
-│   ├── components/
-│   │   ├── account/
-│   │   ├── layout/
-│   │   └── navigation/
-│   ├── icons/
-│   ├── styles/
-│   │   ├── tokens.css
-│   │   ├── base.css
-│   │   ├── components.css
-│   │   └── themes.css
-│   ├── types/
-│   └── index.ts
-├── package.json
-├── README.md
-├── ALANWILLIAMS_UI_ARCHITECTURE.md
-└── ALANWILLIAMS_UI_OVERVIEW.md
-```
-
-The exact internal folder structure may evolve without becoming a
-cross-repository architecture change as long as the public package
-contract remains stable.
+Apps decide whether to render a public layout or authenticated shell.
+Shared UI must not import Clerk or decide `isSignedIn`.
 
 ## Styling Architecture
 
-### Shared Tokens
-
-Common tokens define neutral product-family behavior such as:
-
--   backgrounds
--   surfaces
--   borders
--   text
--   muted text
--   spacing
--   radii
--   navigation dimensions
--   focus behavior
-
-Example conceptual variables:
+App identity tokens are defined centrally, and theme classes inject the
+active app color:
 
 ``` css
-:root {
-  --aw-bg: ...;
-  --aw-surface: ...;
-  --aw-border: ...;
-  --aw-text: ...;
-  --aw-text-muted: ...;
-}
+.aw-theme-platform { --app-primary: var(--aw-app-platform); }
+.aw-theme-agenda   { --app-primary: var(--aw-app-agenda); }
 ```
 
-### App Themes
+Reusable app navigation uses `var(--app-primary)` directly.
 
-Each application has a distinct visual identity layered on top of the
-shared neutral system.
+Universal navigation-state values are root-level shared tokens because
+they do not vary by appearance:
 
-Current direction:
+``` css
+--aw-nav-text: rgba(255, 255, 255, 0.82);
+--aw-nav-text-strong: #ffffff;
+--aw-nav-hover-bg: rgba(255, 255, 255, 0.12);
+--aw-nav-active-bg: #ffffff;
+```
 
-  App        Accent direction
-  ---------- -------------------
-  Platform   AlanWilliams navy
-  Agenda     BYU Royal Blue
-  Budget     green
-  Chores     gold
-  Fitness    dark red
+Do not introduce a shared nav-background token that aliases Platform
+navy. Light/dark blocks should contain values that actually vary by
+appearance.
 
-Apps should remain mostly neutral. App identity is emphasized through:
+Top/header navigation remains on the shared surface and uses the shared
+accent-highlight behavior. App-primary colored surfaces are reserved for
+app navigation and primary app actions.
 
--   logo/icon
--   active navigation
--   primary actions
--   links
--   tags/highlights where appropriate
+## Appearance
 
-App themes must not be confused with domain concepts. For example,
-Agenda domain `theme` records are meeting/content tags and remain
-Agenda-owned.
-
-### Appearance
-
-Global appearance modes are:
+Modes:
 
 ``` text
 SYSTEM
@@ -262,66 +110,127 @@ LIGHT
 DARK
 ```
 
-`alanwilliams-ui` owns the reusable mechanics and styles required to
-render those modes.
+The package owns rendering mechanics and local theme application.
+Platform owns authenticated Person persistence. Consumers bridge
+persisted state into the shared `ThemeProvider`.
 
-Platform owns the persisted Person appearance preference. A consuming
-app is responsible for obtaining the current preference through the
-appropriate Platform contract and applying it to the shared UI.
+## Public Component Contract
 
-The UI package must not query the Platform database or persist Person
-preferences itself.
+Stable public exports currently include: - `ThemeProvider` / theme
+hooks/types - `AppearanceMenu` - `AccountMenu` - `AppHeader` -
+`AppFooter` - `AppShell` - `SideNav` - `BottomNav` - `AppNavItem` -
+shared icons/assets - `styles.css`
 
-## Shared Component Architecture
+Consumers import from package entry points, never internal `src/...`
+paths.
 
-Shared components should accept configuration rather than know
-application business logic.
+## AppShell / Navigation Contract
 
-Conceptual example:
+Apps provide one ordered, permission-filtered list:
+
+``` ts
+export interface AppNavItem {
+    label: string
+    to: string
+    icon: IconDefinition
+}
+```
+
+`AppShell` owns only responsive rendering:
 
 ``` tsx
-<AppShell
-  app="agenda"
-  name="Agenda"
-  navigation={agendaNavigation}
->
-  ...
+<AppShell navigation={navigation}>
+    {children}
 </AppShell>
 ```
 
-The consuming application owns `agendaNavigation`; the shared package
-owns how navigation is rendered responsively.
+### Desktop
 
-### Application Shell
+-   all supplied items are rendered
+-   side nav uses `--app-primary`
+-   shared header is sticky
+-   side nav is sticky immediately beneath the header
+-   content scrolls normally
+-   side nav independently scrolls if its own contents exceed available
+    viewport height
+-   no arbitrary desktop item-count overflow rule
 
-The shared application shell may provide:
+Current layout tokens:
 
--   branded top header
--   desktop side navigation
--   mobile bottom navigation
--   responsive content region
--   account-menu slot/component
--   app theme application
+``` css
+--aw-side-nav-width: 220px;
+--aw-header-height: 73px;
+```
 
-### Navigation
+The header-height token may be tuned if rendered header dimensions
+change.
 
-Navigation definitions are app-owned because available destinations are
-domain-specific.
+### Mobile
 
-The shared library owns:
+Current bottom-nav content height:
 
--   rendering
--   active state styling
--   responsive behavior
--   accessible navigation interaction
--   common icon/text layout
+``` css
+--aw-bottom-nav-height: 68px;
+```
 
-### Account Menu
+Use `min-height`, not a rigid height, to tolerate larger
+text/accessibility settings.
 
-The shared library may own the visual and interaction component for the
-common account menu.
+Behavior: - 1-5 items: render all - \>5 items: render first 4 plus
+generated `More` - overflow is `items.slice(4)` - package supplies the
+ellipsis icon - overflow menu opens above the fixed bar on a neutral
+dropdown surface - active overflow route marks `More` and the matching
+overflow item active - labels remain single-line and ellipsize when
+necessary
 
-Target product-family menu:
+Safe-area contract:
+
+``` css
+min-height: calc(
+    var(--aw-bottom-nav-height) +
+    env(safe-area-inset-bottom, 0px)
+);
+padding-bottom: env(safe-area-inset-bottom, 0px);
+```
+
+The safe-area region uses the same `--app-primary` background.
+`AppShell` reserves equivalent bottom content clearance.
+
+Use standards-based CSS safe areas. Do not add JavaScript
+`visualViewport` workarounds unless real-device testing demonstrates a
+need.
+
+### Permission Boundary
+
+The package receives only the items an app wants rendered. Apps may
+derive them from organization/role/permission state. Hiding a
+destination is UX only; backend authorization remains authoritative.
+
+A future user preference may reorder navigation by reordering the
+supplied array upstream. No shared preference/reordering infrastructure
+exists now.
+
+## Header
+
+`AppHeader` is shared presentation. It supports public/authenticated
+menu slots and app branding supplied by the consumer.
+
+The header is sticky at the top of the viewport. The UI package does not
+determine signed-in state.
+
+Platform currently uses explicit navy/light and white/dark W logo
+assets. Other apps may add explicit dark variants later if contrast
+requires them.
+
+## Footer
+
+`AppFooter` is separate from app navigation. Legal/support destinations
+such as Privacy, Terms, Contact, and copyright remain footer content and
+are not folded into the mobile app-navigation overflow.
+
+## Account Menu
+
+Shared presentation:
 
 ``` text
 My Profile
@@ -331,175 +240,45 @@ My Apps
 Sign Out
 ```
 
-Data and actions remain externally supplied:
-
--   Platform owns profile data.
--   Platform owns appearance persistence.
--   Platform owns My Apps preferences.
--   Clerk owns authentication/sign-out.
--   Consumers provide handlers/data to the reusable component.
-
-This prevents the UI package from becoming a hidden Platform service
-client.
-
-## Icons and Brand Assets
-
-Shared AlanWilliams Apps icons and reusable brand assets belong in
-`alanwilliams-ui` so each application consumes the same approved assets.
-
-Consumers should import assets from the package rather than maintaining
-independent copies.
-
-Application-specific content imagery that is not part of the shared
-product-family identity remains in the application repository.
-
-## Public API
-
-Consumers should import from stable package entry points rather than
-internal source paths.
-
-Preferred:
-
-``` tsx
-import {
-  AppShell,
-  AccountMenu,
-  agendaTheme,
-} from '@ugotalan2/ui'
-
-import '@ugotalan2/ui/styles.css'
-```
-
-Avoid:
-
-``` tsx
-import AppShell from '@ugotalan2/ui/src/components/layout/AppShell'
-```
-
-Internal implementation paths are not part of the compatibility
-contract.
-
-## Dependency Boundaries
-
-The library should minimize required peer/runtime dependencies.
-
-React and React DOM should normally be peer dependencies so consuming
-apps do not bundle conflicting React copies.
-
-Routing-aware components may use React Router when the shared behavior
-genuinely requires it, but the library should avoid owning an
-application's route table.
-
-Clerk integration should be kept at a clean boundary. Shared
-presentation may accept authentication/account callbacks or small
-adapter interfaces rather than embedding Platform-specific account
-persistence.
+Consumers provide navigation/sign-out/persistence handlers. Shared UI
+does not query Platform.
 
 ## Versioning
 
-Use semantic versioning for published package releases.
+-   patch: compatible fixes/visual corrections
+-   minor: backward-compatible public additions
+-   major: breaking public contract changes
 
-General policy:
+`0.5.1` is a patch over `0.5.0`: sticky header/desktop navigation,
+mobile spacing/accessibility/safe-area refinements, and navigation-token
+cleanup; no public API change.
 
--   patch: compatible bug fixes and visual corrections
--   minor: backward-compatible components, props, tokens, or themes
--   major: breaking public API, token, or behavioral changes
+## Consumer Migration
 
-Consumers upgrade deliberately. A new library release does not silently
-alter already deployed applications.
+1.  package/publishing --- complete
+2.  shared tokens/themes/icons --- complete
+3.  Platform CSS/theme adoption --- complete
+4.  shared ThemeProvider/account/header/footer --- complete
+5.  shared AppShell/SideNav/BottomNav --- complete
+6.  Platform `0.5.1` shell verification --- complete
+7.  Agenda adoption --- next
+8.  remove duplicated Agenda shared presentation after verification
+9.  use the same package baseline for future apps
 
-During early `0.x` development, breaking changes may occur more
-frequently, but they should still be documented and coordinated across
-active consumers.
+## Security
 
-## Initial Consumer Migration
+Shared UI is never an authorization source. It contains no Clerk
+secrets, no Platform persistence credentials, and no generic cross-app
+data access.
 
-Recommended sequence:
-
-1.  Establish the package, build, exports, and GitHub Packages
-    publishing. **Complete:** `@ugotalan2/ui@0.1.0` is published.
-2.  Move shared design tokens, base CSS, app themes, and approved icons
-    from Platform into `alanwilliams-ui`. **Complete for the initial CSS/assets
-    extraction.**
-3.  Make Platform consume the package and verify no visual regression.
-    **Complete for shared CSS:** Platform consumes `@ugotalan2/ui@0.1.0`;
-    Platform-specific My Profile/My Apps/preview styles remain local.
-4.  Extract/configure reusable shell, header, navigation, and
-    account-menu presentation.
-5.  Make Agenda the second consumer.
-6.  Remove duplicated shared assets/styles from application repositories
-    after migration.
-7.  Use the same package as the starting point for Budget, Chores,
-    Fitness, and future apps.
-
-Platform should be the first compatibility test because it currently
-contains the working reference implementation. Agenda should be the
-second consumer before the shared API is considered established.
-
-## Testing Expectations
-
-The shared library should test reusable behavior at the library level
-where practical.
-
-Priority areas:
-
--   component rendering
--   active navigation states
--   responsive behavior that can be tested without browser-specific
-    layout assumptions
--   appearance/theme application
--   account-menu interaction
--   accessibility semantics
--   stable public exports
-
-Each consuming app remains responsible for integration tests covering
-its own routes, auth, data, and domain behavior.
-
-## Security and Privacy
-
-`alanwilliams-ui` is a frontend presentation library and must not become
-a source of authorization truth.
-
-Rules:
-
--   never use hidden/disabled UI as the sole authorization control
--   backend services continue to enforce authorization
--   do not store Clerk secrets in the package
--   do not embed environment-specific secrets in shared assets
--   do not expose Platform Person data beyond what a consumer
-    intentionally provides to a component
--   do not implement cross-app data access inside generic UI components
-
-## Deployment
-
-`alanwilliams-ui` has no production runtime service, container,
-database, or public domain.
-
-Its operational lifecycle is:
+## Deployment Lifecycle
 
 ``` text
 develop
--> test
--> publish @ugotalan2/ui version to GitHub Packages
--> consumer pins/upgrades dependency
--> Docker build authenticates with a BuildKit secret
--> npm installs the package
--> consumer bundles shared UI assets/code
--> consumer deploys normally
+-> Docker build/test
+-> publish @ugotalan2/ui
+-> consumer upgrades pinned version
+-> consumer Docker build installs package
+-> consumer bundles assets/code
+-> consumer deploys independently
 ```
-
-A package publication and an application deployment are separate events.
-
-## Architecture Decision Summary
-
-`alanwilliams-ui` is the canonical reusable frontend design-system
-package for AlanWilliams Apps.
-
-It centralizes shared styling, themes, brand assets, and reusable React
-shell/components while preserving:
-
--   Platform ownership of canonical account/profile state
--   app ownership of domain UI and navigation decisions
--   independent application deployment
--   explicit versioned upgrades
--   build-time rather than runtime coupling

@@ -1,6 +1,9 @@
 /* ---------- Header / navigation ---------- */
 
 .aw-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1040;
     background: color-mix(
             in srgb,
             var(--aw-surface) 94%,
@@ -422,7 +425,8 @@
 
 :root {
     --aw-side-nav-width: 220px;
-    --aw-bottom-nav-height: 64px;
+    --aw-bottom-nav-height: 68px;
+    --aw-header-height: 73px;
 }
 
 /* App shell */
@@ -443,8 +447,20 @@
 .aw-side-nav {
     width: var(--aw-side-nav-width);
     flex: 0 0 var(--aw-side-nav-width);
-    background: var(--app-primary);
+
+    background: var(--aw-nav-bg);
     padding: 1rem 0.75rem;
+
+    position: sticky;
+    top: var(--aw-header-height);
+
+    align-self: flex-start;
+
+    height: calc(100vh - var(--aw-header-height));
+    max-height: calc(100vh - var(--aw-header-height));
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 
 .aw-side-nav-items {
@@ -461,7 +477,7 @@
     padding: 0.75rem 0.875rem;
     border-radius: 0.5rem;
 
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--aw-nav-text);
     text-decoration: none;
 
     transition:
@@ -471,13 +487,13 @@
 
 .aw-side-nav-link:hover,
 .aw-side-nav-link:focus-visible {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.12);
+    color: var(--aw-nav-text-strong);
+    background: var(--aw-nav-hover-bg);
 }
 
 .aw-side-nav-link.active {
-    color: var(--app-primary);
-    background: #fff;
+    color: var(--aw-nav-active-text);
+    background: var(--aw-nav-active-bg);
     font-weight: 600;
 }
 
@@ -496,7 +512,7 @@
 
     z-index: 1030;
 
-    background: var(--app-primary);
+    background: var(--aw-nav-bg);
 
     min-height: calc(
             var(--aw-bottom-nav-height) +
@@ -508,7 +524,7 @@
 
 .aw-bottom-nav-items {
     display: flex;
-    height: var(--aw-bottom-nav-height);
+    min-height: var(--aw-bottom-nav-height);
 }
 
 .aw-bottom-nav-link {
@@ -524,31 +540,30 @@
     align-items: center;
     justify-content: center;
 
-    gap: 0.2rem;
+    gap: 0.3rem;
+    padding: 0.45rem 0.25rem;
 
-    padding: 0.35rem 0.25rem;
-
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--aw-nav-text);
     text-decoration: none;
 
-    font-size: 0.72rem;
-    line-height: 1.1;
+    font-size: 0.8rem;
+    line-height: 1.15;
 
     cursor: pointer;
 }
 
 .aw-bottom-nav-link:hover,
 .aw-bottom-nav-link:focus-visible {
-    color: #fff;
+    color: var(--aw-nav-text-strong);
 }
 
 .aw-bottom-nav-link.active {
-    color: #fff;
+    color: var(--aw-nav-text-strong);
     font-weight: 700;
 }
 
 .aw-bottom-nav-icon {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
 }
 
 .aw-bottom-nav-more {
@@ -583,8 +598,15 @@
 }
 
 .aw-bottom-nav-more-item.active {
-    background: var(--app-primary);
-    color: #fff;
+    background: var(--aw-nav-bg);
+    color: var(--aw-nav-text-strong);
+}
+
+.aw-bottom-nav-link span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Reserve space so mobile content/footer is never hidden */

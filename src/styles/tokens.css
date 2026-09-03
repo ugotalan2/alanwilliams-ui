@@ -15,6 +15,7 @@
 [data-aw-theme='light'] {
     --aw-surface: #ffffff;
     --aw-surface-raised: #f8f9fa;
+    --aw-surface-hover: #f1f3f5;
     --aw-text: #212529;
     --aw-text-muted: #6c757d;
     --aw-border: #dee2e6;
@@ -52,6 +53,7 @@
 [data-aw-theme='dark'] {
     --aw-surface: #0f1720;
     --aw-surface-raised: #18212b;
+    --aw-surface-hover: #24303c;
     --aw-text: #f8f9fa;
     --aw-text-muted: #adb5bd;
     --aw-border: #2d3945;

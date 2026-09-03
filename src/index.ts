@@ -24,3 +24,14 @@ export {
     type AppFooterProps,
     type AppFooterLink,
 } from './components/layout/AppFooter'
+
+export { AppShell } from './components/layout/AppShell'
+export type { AppShellProps } from './components/layout/AppShell'
+
+export { SideNav } from './components/navigation/SideNav'
+export type { SideNavProps } from './components/navigation/SideNav'
+
+export { BottomNav } from './components/navigation/BottomNav'
+export type { BottomNavProps } from './components/navigation/BottomNav'
+
+export type { AppNavItem } from './components/navigation/AppNavItem'

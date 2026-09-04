@@ -43,7 +43,7 @@ export function AppHeader({
                           }: AppHeaderProps) {
     return (
         <nav className="navbar navbar-expand-md aw-navbar sticky-top">
-            <div className="container">
+            <div className="container-fluid px-3">
                 <NavLink
                     to={brandTo}
                     className="navbar-brand d-flex align-items-center gap-2"

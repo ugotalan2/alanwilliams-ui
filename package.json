@@ -1,6 +1,6 @@
 {
   "name": "@ugotalan2/ui",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Shared AlanWilliams Apps frontend design system and React UI library",
   "type": "module",
   "engines": {

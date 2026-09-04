@@ -448,7 +448,7 @@
     width: var(--aw-side-nav-width);
     flex: 0 0 var(--aw-side-nav-width);
 
-    background: var(--aw-nav-bg);
+    background: var(--app-primary);
     padding: 1rem 0.75rem;
 
     position: sticky;
@@ -492,7 +492,7 @@
 }
 
 .aw-side-nav-link.active {
-    color: var(--aw-nav-active-text);
+    color: var(--app-primary);
     background: var(--aw-nav-active-bg);
     font-weight: 600;
 }
@@ -512,7 +512,7 @@
 
     z-index: 1030;
 
-    background: var(--aw-nav-bg);
+    background: var(--app-primary);
 
     min-height: calc(
             var(--aw-bottom-nav-height) +
@@ -598,7 +598,7 @@
 }
 
 .aw-bottom-nav-more-item.active {
-    background: var(--aw-nav-bg);
+    background: var(--app-primary);
     color: var(--aw-nav-text-strong);
 }
 

@@ -11,12 +11,10 @@
     --aw-app-fitness: #c52b29;
 
     /* App navigation */
-    --aw-nav-bg: var(--app-primary);
     --aw-nav-text: rgba(255, 255, 255, 0.82);
     --aw-nav-text-strong: #ffffff;
     --aw-nav-hover-bg: rgba(255, 255, 255, 0.12);
     --aw-nav-active-bg: #ffffff;
-    --aw-nav-active-text: var(--app-primary);
 }
 
 :root,

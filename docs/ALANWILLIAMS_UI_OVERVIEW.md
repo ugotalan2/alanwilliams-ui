@@ -3,13 +3,19 @@
 ## Purpose
 
 `alanwilliams-ui` is the shared frontend design system and React
-component library for AlanWilliams Apps. It lets Platform, Agenda, and
-future apps share one visual/account/navigation language without copying
-CSS or components between repositories.
+component library for the AlanWilliams Apps ecosystem.
 
-The package is consumed at build time and is not a deployed service.
+Its purpose is to make Platform, Agenda, Budget, Chores, Fitness, and
+future applications feel like one connected product family without
+copying the same CSS, icons, headers, navigation, account menus, and
+responsive behavior into every repository.
+
+The package is consumed at build time by each application and does not
+run as a separate service.
 
 ## Product Direction
+
+AlanWilliams Apps should provide:
 
 ``` text
 one product family
@@ -19,40 +25,83 @@ one product family
 -> independently deployable apps
 ```
 
+`alanwilliams-ui` supplies the reusable frontend foundation for that
+experience.
+
+## Why This Repository Exists
+
+Before this package, Platform contained the initial shared visual
+language:
+
+-   design tokens
+-   shared cards and typography
+-   appearance styles
+-   app theme previews
+-   app icons
+-   header/account patterns
+-   responsive navigation patterns
+
+Copying those files into Agenda and every future app would create
+multiple implementations that drift over time.
+
+The shared package changes that model to:
+
+``` text
+build once
+-> publish a version
+-> consume everywhere
+```
+
+A fix to a shared component or style can be released once and adopted by
+each app through a normal dependency upgrade.
+
 ## Ownership
 
-### Shared UI owns
+### Shared UI Owns
 
--   semantic design tokens and common CSS
--   SYSTEM / LIGHT / DARK rendering mechanics
--   app identity themes and approved app/brand assets
--   `ThemeProvider`, appearance presentation, account-menu presentation
--   shared header and footer
--   authenticated `AppShell`
--   desktop side-navigation presentation
--   mobile bottom-navigation presentation
--   shared responsive/accessibility behavior
+-   design tokens
+-   common CSS
+-   reusable light/dark appearance styles
+-   app visual themes
+-   shared app icons and brand assets
+-   common application shell
+-   reusable header
+-   reusable account-menu presentation
+-   desktop navigation presentation
+-   mobile navigation presentation
+-   common responsive behavior
+-   shared reusable visual components
 
-### Platform owns
+### Platform Owns
 
--   canonical Person and Clerk linkage
+-   canonical Person
+-   Clerk-to-Person linkage
 -   profile/account data
--   persisted global appearance preference
--   My Apps and onboarding
--   cross-app identity/routing contracts
+-   global appearance preference persistence
+-   My Apps preferences
+-   onboarding
+-   cross-app identity contracts
 
-### Individual apps own
+### Individual Apps Own
 
--   authentication-state decisions about whether the authenticated shell
-    is rendered
--   route definitions and ordered navigation choices
--   domain pages/workflows
--   memberships, permissions, settings, and backend authorization
+-   domain pages
+-   route definitions
+-   navigation choices
+-   app-specific workflows
+-   memberships and permissions
+-   domain data
+-   app-specific settings
+-   backend authorization
 
-Shared UI renders presentation. It does not query Platform APIs, persist
-Person state, or decide app authorization.
+The shared UI package renders common experiences; it does not become a
+cross-app data service.
 
 ## App Identity
+
+Each app keeps its own recognizable accent while sharing the same
+neutral interface system.
+
+Current direction:
 
 ``` text
 Platform -> navy
@@ -62,86 +111,115 @@ Chores   -> gold
 Fitness  -> dark red
 ```
 
-Each app theme sets `--app-primary`. Shared app navigation and primary
-actions use that variable directly; the package does not hard-code
-Platform navy into reusable app navigation.
+The interface should remain primarily neutral, with app identity
+concentrated in the logo, navigation, primary actions, links, and
+selected highlights.
 
-## Shared Navigation Contract
+## Shared Account Experience
 
-Apps supply one ordered flat `AppNavItem[]`:
-
-``` ts
-interface AppNavItem {
-    label: string
-    to: string
-    icon: IconDefinition
-}
-```
-
-The consuming app filters this list for the current user's permissions
-before passing it to `AppShell`.
-
-Desktop: - shows all supplied authorized items - side navigation uses
-`--app-primary` - remains sticky beneath the sticky shared header -
-independently scrolls if its own content exceeds the viewport
-
-Mobile: - fixed bottom navigation using `--app-primary` - 1-5 items:
-show all - more than 5: show first 4 plus package-generated `More` -
-`More` contains `items.slice(4)` - an active overflow route makes `More`
-active - safe-area space is filled by the same app-primary surface -
-shell content reserves bottom-nav clearance automatically
-
-The mobile bottom navigation currently uses a flexible `68px` minimum
-content height plus `env(safe-area-inset-bottom, 0px)`.
-
-## Header / Footer / Account
-
-The shared header is sticky. Public vs authenticated behavior is
-selected by the consuming app; the UI package does not know Clerk.
-
-The footer remains a separate legal/support surface. Privacy, Terms,
-Contact, and copyright are not moved into the mobile `More` menu.
-
-Target shared account menu:
+The target shared account menu across apps is:
 
 ``` text
 My Profile
-Appearance
 My Apps
+[optional app-specific items]
+Appearance
 ---------
 Sign Out
 ```
 
-Handlers and persistence remain app/Platform supplied.
+`alanwilliams-ui` should provide the reusable presentation and
+interaction structure.
+
+Ownership of the underlying behavior remains outside the package:
+
+-   profile -\> Platform
+-   appearance persistence -\> Platform
+-   My Apps -\> Platform
+-   authentication/sign-out -\> Clerk
+
+## Appearance
+
+Supported global appearance modes:
+
+``` text
+SYSTEM
+LIGHT
+DARK
+```
+
+The package owns the CSS/theme mechanics required to display these modes
+consistently.
+
+Platform remains the source of truth for a Person's saved appearance
+preference.
 
 ## Distribution
 
-Current package:
+The package is intended to be published through GitHub npm Packages and
+consumed as:
 
 ``` text
 @ugotalan2/ui
 ```
 
-Registry: GitHub npm Packages.
+Conceptually:
 
-Current proven release:
+``` tsx
+import {
+  AppShell,
+  AccountMenu,
+} from '@ugotalan2/ui'
 
-``` text
-0.5.1
+import '@ugotalan2/ui/styles.css'
 ```
 
-Platform is the first proven consumer. Agenda is the next consumer.
+Apps receive the shared code during their build. They do not load CSS or
+JavaScript from the Platform website at runtime.
+
+## Initial Migration Plan
+
+The initial implementation should proceed in this order:
+
+1.  Create the `alanwilliams-ui` package and publishing setup.
+2.  Extract shared tokens, CSS, themes, and icons from Platform.
+3.  Convert Platform to consume the package.
+4.  Verify Platform remains visually and functionally correct.
+5.  Extract reusable header, shell, navigation, and account-menu
+    presentation.
+6.  Make Agenda consume the package.
+7.  Build Agenda's signed-out landing experience and signed-in shell
+    using shared components.
+8.  Use the package as the frontend baseline for future AlanWilliams
+    apps.
 
 ## Current Status
 
-Implemented and published: - package/publishing pipeline - tokens/base
-CSS/themes/icons - shared `ThemeProvider` - shared Appearance and
-Account menus - shared `AppHeader` - shared `AppFooter` - shared
-`AppShell` - shared desktop `SideNav` - shared mobile `BottomNav` -
-sticky header/desktop nav behavior - mobile overflow and safe-area
-behavior - app-primary navigation theming
+Repository created.
 
-Next: 1. adopt `@ugotalan2/ui@0.5.1` in Agenda 2. render Agenda with
-`aw-theme-agenda` 3. replace duplicated shell/theme/navigation
-presentation 4. then layer Agenda organization context and
-permission-filtered navigation on top
+Architecture direction established:
+
+-   versioned npm package
+-   GitHub Packages distribution
+-   build-time consumption
+-   shared CSS/assets/components
+-   Platform first consumer
+-   Agenda second consumer
+-   no runtime dependency on the Platform frontend
+
+Implementation and publishing setup are the next steps.
+
+## Current Milestone
+
+The package is now published through `@ugotalan2/ui@0.5.4`, with
+Platform and Agenda as active consumers.
+
+Agenda has verified the shared light/dark theme system, full-width
+header, account menu, responsive application shell, sticky desktop side
+navigation, fixed mobile bottom navigation, generated mobile `More`
+overflow, and app-specific navigation color through `--app-primary`.
+
+The account menu supports generic app-specific entries such as
+`Agenda Settings` without putting app-specific behavior in the shared
+package. The shared UI foundation is ready for Agenda domain feature
+development.

@@ -8,9 +8,10 @@ export { ThemeProvider } from './theme/ThemeProvider'
 export { useTheme } from './theme/useTheme'
 export { AppearanceMenu, } from './components/account/AppearanceMenu'
 
-export {
-    AccountMenu,
-    type AccountMenuProps,
+export { AccountMenu } from './components/account/AccountMenu'
+export type {
+    AccountMenuProps,
+    AccountMenuItem,
 } from './components/account/AccountMenu'
 
 export {

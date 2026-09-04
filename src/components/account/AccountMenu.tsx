@@ -69,6 +69,8 @@ export interface AccountMenuProps {
     onApps: () => void
     onSignOut: () => void | Promise<void>
 
+    appItems?: AccountMenuItem[]
+
     onAppearanceChange?: (
         preference: ThemePreference,
     ) => void | Promise<void>
@@ -78,6 +80,7 @@ export function AccountMenu({
                                 onProfile,
                                 onApps,
                                 onSignOut,
+                                appItems = [],
                                 onAppearanceChange,
                             }: AccountMenuProps) {
     const [appearanceOpen, setAppearanceOpen] =
@@ -173,6 +176,39 @@ export function AccountMenu({
                     </button>
                 </li>
 
+                <li>
+                    <button
+                        type="button"
+                        className="dropdown-item"
+                        onClick={onApps}
+                    >
+                        <FontAwesomeIcon
+                            icon={faGrip}
+                            className="me-2"
+                        />
+                        My Apps
+                    </button>
+                </li>
+
+                {appItems.map((item) => (
+                    <li key={item.label}>
+                        <button
+                            type="button"
+                            className="dropdown-item"
+                            onClick={item.onClick}
+                        >
+                            {item.icon && (
+                                <FontAwesomeIcon
+                                    icon={item.icon}
+                                    className="me-2"
+                                />
+                            )}
+
+                            {item.label}
+                        </button>
+                    </li>
+                ))}
+
                 <li className="aw-account-submenu">
                     <button
                         type="button"
@@ -208,57 +244,31 @@ export function AccountMenu({
                             <AppearanceOption
                                 label="System"
                                 icon={faDesktop}
-                                selected={
-                                    preference === 'system'
-                                }
+                                selected={preference === 'system'}
                                 onSelect={() => {
-                                    void changeAppearance(
-                                        'system',
-                                    )
+                                    void changeAppearance('system')
                                 }}
                             />
 
                             <AppearanceOption
                                 label="Light"
                                 icon={faSun}
-                                selected={
-                                    preference === 'light'
-                                }
+                                selected={preference === 'light'}
                                 onSelect={() => {
-                                    void changeAppearance(
-                                        'light',
-                                    )
+                                    void changeAppearance('light')
                                 }}
                             />
 
                             <AppearanceOption
                                 label="Dark"
                                 icon={faMoon}
-                                selected={
-                                    preference === 'dark'
-                                }
+                                selected={preference === 'dark'}
                                 onSelect={() => {
-                                    void changeAppearance(
-                                        'dark',
-                                    )
+                                    void changeAppearance('dark')
                                 }}
                             />
                         </div>
                     )}
-                </li>
-
-                <li>
-                    <button
-                        type="button"
-                        className="dropdown-item"
-                        onClick={onApps}
-                    >
-                        <FontAwesomeIcon
-                            icon={faGrip}
-                            className="me-2"
-                        />
-                        My Apps
-                    </button>
                 </li>
 
                 <li>
@@ -283,4 +293,10 @@ export function AccountMenu({
             </ul>
         </div>
     )
+}
+
+export interface AccountMenuItem {
+    label: string
+    icon?: IconDefinition
+    onClick: () => void
 }

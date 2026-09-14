@@ -130,6 +130,37 @@
     color: var(--aw-accent);
 }
 
+.aw-btn-app-primary {
+    background: var(--app-primary);
+    border: 2px solid var(--app-primary);
+    color: #ffffff;
+    transition:
+            background-color 150ms ease,
+            border-color 150ms ease,
+            color 150ms ease;
+}
+
+.aw-btn-app-primary:hover,
+.aw-btn-app-primary:focus-visible {
+    background: #ffffff;
+    border-color: var(--app-primary);
+    color: var(--app-primary);
+}
+
+.aw-btn-app-primary:disabled {
+    background: var(--app-primary);
+    border-color: var(--app-primary);
+    color: #ffffff;
+    opacity: 0.65;
+}
+
+[data-aw-theme='dark'] .aw-btn-app-primary:hover,
+[data-aw-theme='dark'] .aw-btn-app-primary:focus-visible {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--app-primary);
+}
+
 [data-aw-theme='dark'] .aw-btn-accent {
     background: var(--aw-accent);
     border-color: var(--aw-accent);

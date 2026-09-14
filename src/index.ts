@@ -36,3 +36,9 @@ export { BottomNav } from './components/navigation/BottomNav'
 export type { BottomNavProps } from './components/navigation/BottomNav'
 
 export type { AppNavItem } from './components/navigation/AppNavItem'
+
+export { PlatformIdentityGate } from './auth/PlatformIdentityGate'
+
+export {
+    redirectToPlatformOnboarding,
+} from './auth/platformRedirect'

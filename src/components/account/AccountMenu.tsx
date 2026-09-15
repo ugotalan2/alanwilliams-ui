@@ -18,10 +18,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import {
     useTheme,
-} from '../../index'
+} from '../../theme/useTheme.js'
 import type {
     ThemePreference,
-} from '../../theme/ThemeContext'
+} from '../../theme/ThemeContext.js'
 
 interface AppearanceOptionProps {
     label: string

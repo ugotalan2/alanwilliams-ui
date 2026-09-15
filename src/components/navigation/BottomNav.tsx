@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { NavLink, matchPath, useLocation } from 'react-router-dom'
 
-import type { AppNavItem } from './AppNavItem'
+import type { AppNavItem } from './AppNavItem.js'
 
 export interface BottomNavProps {
     items: AppNavItem[]

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { NavLink } from 'react-router-dom'
-import type { AppNavItem } from './AppNavItem'
+import type { AppNavItem } from './AppNavItem.js'
 
 export interface SideNavProps {
     items: AppNavItem[]

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-import { BottomNav } from '../navigation/BottomNav'
-import { SideNav } from '../navigation/SideNav'
-import type { AppNavItem } from '../navigation/AppNavItem'
+import { BottomNav } from '../navigation/BottomNav.js'
+import { SideNav } from '../navigation/SideNav.js'
+import type { AppNavItem } from '../navigation/AppNavItem.js'
 
 export interface AppShellProps {
     navigation: AppNavItem[]

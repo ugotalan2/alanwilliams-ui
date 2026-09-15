@@ -4,7 +4,7 @@ import {
     faMoon,
     faSun,
 } from '@fortawesome/free-solid-svg-icons'
-import { useTheme } from '../../theme/useTheme'
+import { useTheme } from '../../theme/useTheme.js'
 
 export function AppearanceMenu() {
     const {

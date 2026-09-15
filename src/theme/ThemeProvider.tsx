@@ -7,7 +7,7 @@ import {
 import {
     ThemeContext,
     type ThemePreference,
-} from './ThemeContext'
+} from './ThemeContext.js'
 
 const STORAGE_KEY = 'aw-theme'
 

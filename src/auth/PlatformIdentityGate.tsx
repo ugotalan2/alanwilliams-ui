@@ -3,7 +3,7 @@ import {
     type ReactNode,
 } from 'react'
 
-import { redirectToPlatformOnboarding } from './platformRedirect'
+import { redirectToPlatformOnboarding } from './platformRedirect.js'
 
 interface PlatformIdentityGateProps {
     platformPersonId: number | null | undefined

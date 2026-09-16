@@ -121,9 +121,8 @@ The target shared account menu across apps is:
 
 ``` text
 My Profile
-My Apps
-[optional app-specific items]
 Appearance
+My Apps
 ---------
 Sign Out
 ```
@@ -160,7 +159,7 @@ The package is intended to be published through GitHub npm Packages and
 consumed as:
 
 ``` text
-@ugotalan2/ui
+@alanwilliams/ui
 ```
 
 Conceptually:
@@ -169,9 +168,9 @@ Conceptually:
 import {
   AppShell,
   AccountMenu,
-} from '@ugotalan2/ui'
+} from '@alanwilliams/ui'
 
-import '@ugotalan2/ui/styles.css'
+import '@alanwilliams/ui/styles.css'
 ```
 
 Apps receive the shared code during their build. They do not load CSS or
@@ -209,17 +208,22 @@ Architecture direction established:
 
 Implementation and publishing setup are the next steps.
 
-## Current Milestone
+## September 2026 Shared Identity / Theme Milestone
 
-The package is now published through `@ugotalan2/ui@0.5.4`, with
-Platform and Agenda as active consumers.
+The package is now consumed by Platform and Agenda as `@ugotalan2/ui`. The
+current proven Agenda integration is `0.5.7`.
 
-Agenda has verified the shared light/dark theme system, full-width
-header, account menu, responsive application shell, sticky desktop side
-navigation, fixed mobile bottom navigation, generated mobile `More`
-overflow, and app-specific navigation color through `--app-primary`.
+Shared UI now includes the reusable `PlatformIdentityGate` and Platform
+onboarding redirect helper. The gate receives identity state from the consumer;
+it does not call Platform APIs or own Clerk authentication. When a signed-in
+consumer reports a missing Platform Person ID, it redirects to Platform
+`/onboarding` with the current app origin as `returnTo`.
 
-The account menu supports generic app-specific entries such as
-`Agenda Settings` without putting app-specific behavior in the shared
-package. The shared UI foundation is ready for Agenda domain feature
-development.
+The package also exposes the semantic `.aw-btn-app-primary` treatment for
+app-identity-colored primary actions. Shared secondary/accent treatments remain
+cross-app semantics rather than being recolored per application.
+
+Native ESM package source uses explicit `.js` specifiers for relative imports.
+Internal modules import their owning modules directly instead of routing through
+the public barrel when doing so could create circular imports.
+

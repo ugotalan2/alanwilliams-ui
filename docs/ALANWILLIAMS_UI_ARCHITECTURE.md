@@ -37,7 +37,7 @@ alanwilliams-ui
 -> Platform / Agenda / future apps
 ```
 
-Current proven package version: `0.5.1`.
+Current proven Agenda package version: `0.5.7`.
 
 Consumers pin/upgrade deliberately. Package publication and consumer
 deployment are separate events. Private registry credentials are
@@ -249,9 +249,7 @@ does not query Platform.
 -   minor: backward-compatible public additions
 -   major: breaking public contract changes
 
-`0.5.1` is a patch over `0.5.0`: sticky header/desktop navigation,
-mobile spacing/accessibility/safe-area refinements, and navigation-token
-cleanup; no public API change.
+`0.5.7` is the current proven Agenda baseline. It includes the shared identity gate and native-ESM packaging fixes in addition to the earlier shell/navigation refinements.
 
 ## Consumer Migration
 
@@ -260,9 +258,9 @@ cleanup; no public API change.
 3.  Platform CSS/theme adoption --- complete
 4.  shared ThemeProvider/account/header/footer --- complete
 5.  shared AppShell/SideNav/BottomNav --- complete
-6.  Platform `0.5.1` shell verification --- complete
-7.  Agenda adoption --- next
-8.  remove duplicated Agenda shared presentation after verification
+6.  Platform shell verification --- complete
+7.  Agenda adoption --- complete through `0.5.7`
+8.  remove remaining duplicated/dead consumer presentation as cleanup
 9.  use the same package baseline for future apps
 
 ## Security
@@ -282,3 +280,54 @@ develop
 -> consumer bundles assets/code
 -> consumer deploys independently
 ```
+
+## Platform Identity Gate
+
+Shared UI owns the reusable presentation/control-flow boundary for downstream
+apps that require a Platform Person, but it does not fetch identity itself.
+Consumers supply:
+
+``` text
+platformPersonId: number | null | undefined
+platformBaseUrl: string
+loading: optional boolean
+loadingFallback: optional React content
+```
+
+If the authenticated consumer has finished loading and
+`platformPersonId == null`, `PlatformIdentityGate` redirects to:
+
+``` text
+<platformBaseUrl>/onboarding?returnTo=<window.location.origin>
+```
+
+Platform validates `returnTo`; the shared package only supplies the requesting
+origin. The gate must remain free of Platform API calls, Clerk secrets, Person
+persistence, and app authorization.
+
+## Semantic Button Contract
+
+App-primary actions use:
+
+``` css
+.aw-btn-app-primary
+```
+
+The class resolves through the active app identity token. Use it for primary
+application actions where app identity is intentional.
+
+`aw-btn-secondary` remains a shared AlanWilliams secondary treatment and
+`aw-btn-accent` remains a shared/global accent treatment. Do not make those
+classes app-specific merely because they are rendered inside an app.
+
+## Native ESM Packaging Convention
+
+Published source/output must remain valid under native ESM resolution. Relative
+module imports use explicit `.js` specifiers. Internal implementation modules
+should import the module that owns a symbol directly rather than importing back
+through the package/public barrel when that creates circular dependency risk.
+
+The current proven Agenda package integration is `@ugotalan2/ui@0.5.7`, which
+includes the ESM-resolution/circular-import corrections and the Platform
+identity gate.
+

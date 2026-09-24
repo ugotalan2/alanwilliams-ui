@@ -5,7 +5,7 @@ export function redirectToPlatformOnboarding(
 
     url.searchParams.set(
         'returnTo',
-        window.location.origin,
+        window.location.href,
     )
 
     window.location.assign(url.toString())

@@ -42,3 +42,4 @@ export { PlatformIdentityGate } from './auth/PlatformIdentityGate.js'
 export {
     redirectToPlatformOnboarding,
 } from './auth/platformRedirect.js'
+export { ModalShell } from './components/feedback/ModalShell.js'

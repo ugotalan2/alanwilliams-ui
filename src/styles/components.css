@@ -176,55 +176,18 @@
 
 .aw-btn-secondary,
 .aw-btn-secondary:visited {
-    background-color: transparent;
-    border: 2px solid var(--aw-secondary-action);
-    color: var(--aw-secondary-action);
+    border: 1px solid var(--aw-border);
+    background: var(--aw-surface);
+    color: var(--aw-text);
 }
 
 .aw-btn-secondary:hover,
 .aw-btn-secondary:focus,
 .aw-btn-secondary:focus-visible,
 .aw-btn-secondary:active {
-    background-color: var(--aw-secondary-action-hover);
-    border: 2px solid var(--aw-secondary-action-hover);
-    color: #ffffff;
-}
-
-[data-aw-theme='dark'] .aw-btn-secondary:hover,
-[data-aw-theme='dark'] .aw-btn-secondary:focus,
-[data-aw-theme='dark'] .aw-btn-secondary:focus-visible,
-[data-aw-theme='dark'] .aw-btn-secondary:active {
-    background-color: #ffffff;
-    border: 2px solid #ffffff;
-    color: var(--aw-royal);
-}
-
-.aw-btn-secondary:hover,
-.aw-btn-secondary:focus-visible {
-    background: var(--aw-secondary-action-hover);
-    border-color: var(--aw-secondary-action-hover);
-    color: #ffffff;
-}
-
-[data-aw-theme='dark'] .aw-btn-secondary {
-    --bs-btn-color: var(--aw-secondary-action);
-    --bs-btn-bg: transparent;
-    --bs-btn-border-color: var(--aw-secondary-action);
-
-    --bs-btn-hover-color: var(--aw-royal);
-    --bs-btn-hover-bg: #ffffff;
-    --bs-btn-hover-border-color: #ffffff;
-
-    --bs-btn-active-color: var(--aw-royal);
-    --bs-btn-active-bg: #ffffff;
-    --bs-btn-active-border-color: #ffffff;
-}
-
-[data-aw-theme='dark'] .aw-btn-secondary:hover,
-[data-aw-theme='dark'] .aw-btn-secondary:focus-visible {
-    background: #ffffff;
-    border-color: #ffffff;
-    color: var(--aw-royal);
+    background: var(--aw-surface-hover);
+    border-color: var(--aw-border);
+    color: var(--aw-text);
 }
 
 /* ---------- Dropdown menus ---------- */
@@ -649,4 +612,13 @@
                 env(safe-area-inset-bottom, 0px)
         );
     }
+}
+/* ---------- Modal shell ---------- */
+
+.aw-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
 }

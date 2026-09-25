@@ -69,6 +69,10 @@ export interface AccountMenuProps {
     onApps: () => void
     onSignOut: () => void | Promise<void>
 
+    displayName?: string
+    email?: string
+    imageUrl?: string
+
     appItems?: AccountMenuItem[]
 
     onAppearanceChange?: (
@@ -80,6 +84,9 @@ export function AccountMenu({
                                 onProfile,
                                 onApps,
                                 onSignOut,
+                                displayName,
+                                email,
+                                imageUrl,
                                 appItems = [],
                                 onAppearanceChange,
                             }: AccountMenuProps) {
@@ -158,10 +165,54 @@ export function AccountMenu({
                 aria-expanded="false"
                 aria-label="Open profile menu"
             >
-                <FontAwesomeIcon icon={faCircleUser} />
+                {imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        alt=""
+                        className="aw-account-avatar"
+                    />
+                ) : (
+                    <FontAwesomeIcon icon={faCircleUser} />
+                )}
             </button>
 
             <ul className="dropdown-menu dropdown-menu-end">
+                {(displayName || email) && (
+                    <>
+                        <li className="aw-account-identity">
+                            {imageUrl ? (
+                                <img
+                                    src={imageUrl}
+                                    alt=""
+                                    className="aw-account-identity-avatar"
+                                />
+                            ) : (
+                                <FontAwesomeIcon
+                                    icon={faCircleUser}
+                                    className="aw-account-identity-icon"
+                                />
+                            )}
+
+                            <span className="aw-account-identity-text">
+                                {displayName && (
+                                    <span className="aw-account-identity-name">
+                                        {displayName}
+                                    </span>
+                                )}
+                                {email && (
+                                    <span className="aw-account-identity-email">
+                                        {email}
+                                    </span>
+                                )}
+                            </span>
+                        </li>
+
+                        <li>
+                            <hr className="dropdown-divider" />
+                        </li>
+                    </>
+                )}
+
                 <li>
                     <button
                         type="button"

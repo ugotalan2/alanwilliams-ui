@@ -111,14 +111,14 @@ export function AppHeader({
                                     {onSignIn && (
                                         <button
                                             type="button"
-                                            className="btn aw-btn-accent aw-mobile-sign-in ms-md-2"
+                                            className="btn aw-btn-primary aw-mobile-sign-in ms-md-2"
                                             onClick={onSignIn}
                                         >
                                             <FontAwesomeIcon
                                                 icon={faRightToBracket}
                                                 className="me-2"
                                             />
-                                            Sign In / Sign Up
+                                            Sign In
                                         </button>
                                     )}
                                 </>

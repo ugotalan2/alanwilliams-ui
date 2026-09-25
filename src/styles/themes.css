@@ -2,6 +2,10 @@
     --app-primary: var(--aw-app-platform);
 }
 
+[data-aw-theme='dark'] .aw-theme-platform {
+    --app-primary: var(--aw-royal);
+}
+
 .aw-theme-agenda {
     --app-primary: var(--aw-app-agenda);
 }

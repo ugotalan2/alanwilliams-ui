@@ -176,18 +176,27 @@
 
 .aw-btn-secondary,
 .aw-btn-secondary:visited {
-    border: 1px solid var(--aw-border);
-    background: var(--aw-surface);
-    color: var(--aw-text);
+    background-color: transparent;
+    border: 2px solid var(--aw-secondary-action);
+    color: var(--aw-secondary-action);
 }
 
 .aw-btn-secondary:hover,
 .aw-btn-secondary:focus,
 .aw-btn-secondary:focus-visible,
 .aw-btn-secondary:active {
-    background: var(--aw-surface-hover);
-    border-color: var(--aw-border);
-    color: var(--aw-text);
+    background-color: var(--aw-secondary-action-hover);
+    border-color: var(--aw-secondary-action-hover);
+    color: #ffffff;
+}
+
+[data-aw-theme='dark'] .aw-btn-secondary:hover,
+[data-aw-theme='dark'] .aw-btn-secondary:focus,
+[data-aw-theme='dark'] .aw-btn-secondary:focus-visible,
+[data-aw-theme='dark'] .aw-btn-secondary:active {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: var(--aw-royal);
 }
 
 /* ---------- Dropdown menus ---------- */

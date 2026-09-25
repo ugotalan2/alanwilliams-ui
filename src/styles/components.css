@@ -199,6 +199,22 @@
     color: var(--aw-royal);
 }
 
+.aw-btn-menu,
+.aw-btn-menu:visited {
+    background: transparent;
+    border: 1px solid var(--aw-border);
+    color: var(--aw-text);
+}
+
+.aw-btn-menu:hover,
+.aw-btn-menu:focus,
+.aw-btn-menu:focus-visible,
+.aw-btn-menu:active {
+    background: var(--aw-surface-hover);
+    border-color: var(--aw-border);
+    color: var(--aw-accent-highlight);
+}
+
 /* ---------- Dropdown menus ---------- */
 
 .dropdown-menu {

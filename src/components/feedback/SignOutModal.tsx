@@ -10,6 +10,13 @@ export interface SignOutModalProps {
     busy?: boolean
 }
 
+function modalPortalTarget(): Element {
+    return (
+        document.querySelector('[class*="aw-theme-"]') ??
+        document.body
+    )
+}
+
 export function SignOutModal({
     appName,
     open,
@@ -81,6 +88,6 @@ export function SignOutModal({
                 </button>
             </div>
         </ModalShell>,
-        document.body,
+        modalPortalTarget(),
     )
 }

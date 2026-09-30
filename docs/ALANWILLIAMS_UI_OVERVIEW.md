@@ -123,7 +123,9 @@ The target shared account menu across apps is:
 My Profile
 Appearance
 My Apps
+<app-specific items when supplied>
 ---------
+Switch Account
 Sign Out
 ```
 
@@ -135,7 +137,16 @@ Ownership of the underlying behavior remains outside the package:
 -   profile -\> Platform
 -   appearance persistence -\> Platform
 -   My Apps -\> Platform
--   authentication/sign-out -\> Clerk
+-   authentication/sign-out/switch-account -\> Clerk
+
+Shared UI owns session-action placement and reusable `SignOutModal`
+presentation, but not Clerk session mutation. Normal local Sign Out and Switch
+Account stay within the current app. Only explicit "Sign out of all apps" uses
+the app-owned cross-domain logout cascade.
+
+`SessionTransition` remains available for genuine page/origin transitions such
+as that all-app logout cascade; it is not part of normal local Sign Out or
+Switch Account.
 
 ## Appearance
 
@@ -254,3 +265,30 @@ full original URL. Any future shared identity-navigation helper must accept the
 consumer's intended full return destination rather than reconstructing it from
 `window.location.origin`.
 
+
+
+## Shared Package Development Workflow
+
+Before committing a shared UI package release, bump and build it with Node 24
+in Docker from the `alanwilliams-ui` repository root:
+
+``` bash
+docker run --rm \
+  -v "$PWD":/app \
+  -w /app \
+  node:24-alpine \
+  npm version patch --no-git-tag-version
+```
+
+Then:
+
+``` bash
+docker run --rm \
+  -v "$PWD:/app" \
+  -w /app \
+  node:24-alpine \
+  sh -c 'npm ci && npm run build'
+```
+
+The bind-mounted build writes the publishable `dist` back to the repository so
+it can be verified before commit/push and package publication.

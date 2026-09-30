@@ -37,7 +37,7 @@ alanwilliams-ui
 -> Platform / Agenda / future apps
 ```
 
-Current proven Agenda package version: `0.5.15`.
+Current proven consumer baseline before the current session-actions release: `0.5.15`. The current package work advances the shared UI package to `0.5.17`; consumer verification must complete before treating that version as proven.
 
 Consumers pin/upgrade deliberately. Package publication and consumer
 deployment are separate events. Private registry credentials are
@@ -117,8 +117,8 @@ persisted state into the shared `ThemeProvider`.
 ## Public Component Contract
 
 Stable public exports currently include: - `ThemeProvider` / theme
-hooks/types - `AppearanceMenu` - `AccountMenu` - `AppHeader` -
-`AppFooter` - `AppShell` - `SideNav` - `BottomNav` - `AppNavItem` -
+hooks/types - `AppearanceMenu` - `AccountMenu` - `SignOutModal` -
+`SessionTransition` - `AppHeader` - `AppFooter` - `AppShell` - `SideNav` - `BottomNav` - `AppNavItem` -
 shared icons/assets - `styles.css`
 
 Consumers import from package entry points, never internal `src/...`
@@ -236,12 +236,27 @@ Shared presentation:
 My Profile
 Appearance
 My Apps
+<app-specific items when supplied>
 ---------
+Switch Account
 Sign Out
 ```
 
-Consumers provide navigation/sign-out/persistence handlers. Shared UI
-does not query Platform.
+`Switch Account` is a session action and is rendered immediately above
+`Sign Out`, not with profile/settings/app-specific items. Consumers provide
+navigation, switch-account, sign-out, and persistence handlers. Shared UI
+does not query Platform or Clerk.
+
+`SignOutModal` provides the common local-vs-all-apps sign-out choice and
+presentation. Consumers own the actual session operations. The modal is
+portaled into the active `.aw-theme-*` root rather than directly to
+`document.body` so app-scoped `--app-primary` remains available to
+`.aw-btn-app-primary`.
+
+`SessionTransition` remains useful as generic full-viewport presentation for
+flows that genuinely transition between pages/origins, such as the
+cross-domain "Sign out of all apps" cascade. It is not used for normal local
+Sign Out or Switch Account.
 
 ## Versioning
 
@@ -361,3 +376,31 @@ shared UI redirect alone cannot guarantee identity continuity across domains.
 That problem belongs to the Platform/authentication integration contract, with
 consumer UI invoking the resulting flow.
 
+
+
+## Package Version / Pre-Commit Verification Workflow
+
+Use Node 24 in Docker for package versioning and build verification. Before
+committing a package release, bump the patch version from the repository root:
+
+``` bash
+docker run --rm \
+  -v "$PWD":/app \
+  -w /app \
+  node:24-alpine \
+  npm version patch --no-git-tag-version
+```
+
+Then generate and verify the publishable build:
+
+``` bash
+docker run --rm \
+  -v "$PWD:/app" \
+  -w /app \
+  node:24-alpine \
+  sh -c 'npm ci && npm run build'
+```
+
+The bind mount is intentional: generated `dist` is written back to the working
+repository for inspection. Only after the version bump and build succeed should
+the package changes be committed/pushed and published.

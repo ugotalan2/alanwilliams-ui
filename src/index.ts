@@ -43,3 +43,13 @@ export {
     redirectToPlatformOnboarding,
 } from './auth/platformRedirect.js'
 export { ModalShell } from './components/feedback/ModalShell.js'
+
+export {
+    SignOutModal,
+    type SignOutModalProps,
+} from './components/feedback/SignOutModal.js'
+
+export {
+    SessionTransition,
+    type SessionTransitionProps,
+} from './components/feedback/SessionTransition.js'

@@ -37,7 +37,7 @@ alanwilliams-ui
 -> Platform / Agenda / future apps
 ```
 
-Current proven Agenda package version: `0.5.7`.
+Current proven Agenda package version: `0.5.15`.
 
 Consumers pin/upgrade deliberately. Package publication and consumer
 deployment are separate events. Private registry credentials are
@@ -249,7 +249,7 @@ does not query Platform.
 -   minor: backward-compatible public additions
 -   major: breaking public contract changes
 
-`0.5.7` is the current proven Agenda baseline. It includes the shared identity gate and native-ESM packaging fixes in addition to the earlier shell/navigation refinements.
+`0.5.15` is the current proven Agenda baseline. It includes the shared identity gate and native-ESM packaging fixes in addition to the earlier shell/navigation refinements.
 
 ## Consumer Migration
 
@@ -259,7 +259,7 @@ does not query Platform.
 4.  shared ThemeProvider/account/header/footer --- complete
 5.  shared AppShell/SideNav/BottomNav --- complete
 6.  Platform shell verification --- complete
-7.  Agenda adoption --- complete through `0.5.7`
+7.  Agenda adoption --- complete through `0.5.15`
 8.  remove remaining duplicated/dead consumer presentation as cleanup
 9.  use the same package baseline for future apps
 
@@ -330,4 +330,34 @@ through the package/public barrel when that creates circular dependency risk.
 The current proven Agenda package integration is `@ugotalan2/ui@0.5.7`, which
 includes the ESM-resolution/circular-import corrections and the Platform
 identity gate.
+
+## Late September 2026 Shared Component / Identity Navigation Update
+
+The current proven consumer baseline is `@ugotalan2/ui@0.5.15`.
+
+Shared reusable presentation now includes `ModalShell`, account identity fields
+(`displayName`, `email`, and `imageUrl`), signed-out Appearance presentation, and
+the semantic button classes:
+
+``` text
+.aw-btn-app-primary
+.aw-btn-accent
+.aw-btn-secondary
+.aw-btn-menu
+```
+
+`aw-btn-menu` is intended for quiet menu triggers; menu rows continue to use the
+shared dropdown-item treatment. `aw-btn-app-primary` resolves through the active
+app theme's `--app-primary` token.
+
+`PlatformIdentityGate` must not assume that `window.location.origin` is a
+sufficient return target. Consumers such as Agenda invitations need to preserve
+the full current URL. Shared UI may provide reusable redirect/navigation
+presentation, but it must not own Clerk session mutation, Platform Person API
+calls, server-side cross-domain identity handoff, or allowlist policy.
+
+Because separate app domains can retain independent Clerk browser sessions, a
+shared UI redirect alone cannot guarantee identity continuity across domains.
+That problem belongs to the Platform/authentication integration contract, with
+consumer UI invoking the resulting flow.
 

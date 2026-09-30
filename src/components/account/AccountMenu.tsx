@@ -13,6 +13,7 @@ import {
     faDesktop,
     faGrip,
     faMoon,
+    faRightLeft,
     faSun,
     faUser,
 } from '@fortawesome/free-solid-svg-icons'
@@ -68,6 +69,7 @@ export interface AccountMenuProps {
     onProfile: () => void
     onApps: () => void
     onSignOut: () => void | Promise<void>
+    onSwitchAccount?: () => void | Promise<void>
 
     displayName?: string
     email?: string
@@ -84,6 +86,7 @@ export function AccountMenu({
                                 onProfile,
                                 onApps,
                                 onSignOut,
+                                onSwitchAccount,
                                 displayName,
                                 email,
                                 imageUrl,
@@ -325,6 +328,24 @@ export function AccountMenu({
                 <li>
                     <hr className="dropdown-divider" />
                 </li>
+
+                {onSwitchAccount && (
+                    <li>
+                        <button
+                            type="button"
+                            className="dropdown-item"
+                            onClick={() => {
+                                void onSwitchAccount()
+                            }}
+                        >
+                            <FontAwesomeIcon
+                                icon={faRightLeft}
+                                className="me-2"
+                            />
+                            Switch Account
+                        </button>
+                    </li>
+                )}
 
                 <li>
                     <button

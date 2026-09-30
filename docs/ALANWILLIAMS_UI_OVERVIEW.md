@@ -211,7 +211,7 @@ Implementation and publishing setup are the next steps.
 ## September 2026 Shared Identity / Theme Milestone
 
 The package is now consumed by Platform and Agenda as `@ugotalan2/ui`. The
-current proven Agenda integration is `0.5.7`.
+current proven Agenda integration is `0.5.15`.
 
 Shared UI now includes the reusable `PlatformIdentityGate` and Platform
 onboarding redirect helper. The gate receives identity state from the consumer;
@@ -226,4 +226,31 @@ cross-app semantics rather than being recolored per application.
 Native ESM package source uses explicit `.js` specifiers for relative imports.
 Internal modules import their owning modules directly instead of routing through
 the public barrel when doing so could create circular imports.
+
+## Late September 2026 Current Shared UI Baseline
+
+Platform and Agenda now consume `@ugotalan2/ui@0.5.15`.
+
+The shared package currently includes the common shell/navigation/theme system,
+`ModalShell`, account-menu identity presentation, signed-out appearance
+presentation, and semantic button treatments used by the consumers.
+
+Current button vocabulary:
+
+``` text
+aw-btn-app-primary -> app-branded primary action
+aw-btn-accent      -> shared accent/highlight action
+aw-btn-secondary   -> shared secondary action
+aw-btn-menu        -> quiet action-menu trigger
+```
+
+The package continues to own presentation only. Clerk sessions, Platform Person
+state, cross-domain identity handoff policy, return-destination validation, and
+app authorization remain outside the UI package.
+
+The old assumption that a missing-Person redirect can always send only the app
+origin is no longer sufficient. Invitation/onboarding flows must preserve the
+full original URL. Any future shared identity-navigation helper must accept the
+consumer's intended full return destination rather than reconstructing it from
+`window.location.origin`.
 

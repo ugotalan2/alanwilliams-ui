@@ -53,3 +53,8 @@ export {
     SessionTransition,
     type SessionTransitionProps,
 } from './components/feedback/SessionTransition.js'
+
+export {
+    ActionMenu,
+    type ActionMenuProps,
+} from './components/actions/ActionMenu.js'

@@ -196,6 +196,17 @@ docker run --rm \
   sh -c 'npm ci && npm run build'
 ```
 
+Source changes should be prepared as replacement copies of only the files being
+modified. The developer swaps those files into the repository and reviews the
+result with Git diff before committing. Preserve existing formatting and keep
+changes localized so the functional diff remains easy to review. Do not include
+package-version bumps in replacement-file bundles; the repository's release
+script owns version bumping and the package build/test step.
+
+Before publishing a shared UI package release, run the repository release/build
+script and verify the package with Node 24. Publish only after the source diff and
+build/test result are clean.
+
 ## Initial Migration Plan
 
 The initial implementation should proceed in this order:
@@ -274,3 +285,15 @@ full original URL. Any future shared identity-navigation helper must accept the
 consumer's intended full return destination rather than reconstructing it from
 `window.location.origin`.
 
+
+## Action Menu Ownership
+
+Reusable row/card action-menu presentation and portal positioning belong to the
+shared UI package rather than individual consumer apps. The shared `ActionMenu`
+keeps its portal attached to the trigger while open by recalculating trigger
+coordinates on captured scroll events and window resize. Domain-specific menu
+actions, labels, permissions, and workflows remain consumer-owned.
+
+This change is prepared for the next patch release after `0.5.17`; the proven
+consumer baseline remains `0.5.17` until the package is published and verified in
+Agenda.

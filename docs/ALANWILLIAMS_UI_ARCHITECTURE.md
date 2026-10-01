@@ -251,6 +251,12 @@ does not query Platform.
 
 `0.5.17` is the current proven Agenda baseline. It includes the shared identity gate and native-ESM packaging fixes in addition to the earlier shell/navigation refinements.
 
+The next patch after `0.5.17` adds shared `ActionMenu` ownership and portal
+position synchronization. While open, the menu recalculates its trigger-relative
+viewport coordinates on captured scroll events and window resize so it remains
+visually attached even inside nested scroll containers. Consumer apps continue
+to own domain-specific actions, labels, permissions, and workflows.
+
 ## Consumer Migration
 
 1.  package/publishing --- complete
@@ -268,6 +274,17 @@ does not query Platform.
 Shared UI is never an authorization source. It contains no Clerk
 secrets, no Platform persistence credentials, and no generic cross-app
 data access.
+
+
+### Source Change / Diff Discipline
+
+When preparing shared UI changes for review, create replacement copies of only
+the files being modified. The developer swaps those files into the repository and
+uses Git diff to review the exact change before committing. Preserve surrounding
+formatting and prefer localized edits over unrelated cleanup or reformatting.
+
+Replacement-file bundles should not include package-version bumps. The
+repository's release script owns version bumping plus the package build/test step.
 
 ## Deployment Lifecycle
 

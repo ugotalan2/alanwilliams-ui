@@ -123,9 +123,7 @@ The target shared account menu across apps is:
 My Profile
 Appearance
 My Apps
-<app-specific items when supplied>
 ---------
-Switch Account
 Sign Out
 ```
 
@@ -137,16 +135,7 @@ Ownership of the underlying behavior remains outside the package:
 -   profile -\> Platform
 -   appearance persistence -\> Platform
 -   My Apps -\> Platform
--   authentication/sign-out/switch-account -\> Clerk
-
-Shared UI owns session-action placement and reusable `SignOutModal`
-presentation, but not Clerk session mutation. Normal local Sign Out and Switch
-Account stay within the current app. Only explicit "Sign out of all apps" uses
-the app-owned cross-domain logout cascade.
-
-`SessionTransition` remains available for genuine page/origin transitions such
-as that all-app logout cascade; it is not part of normal local Sign Out or
-Switch Account.
+-   authentication/sign-out -\> Clerk
 
 ## Appearance
 
@@ -187,6 +176,26 @@ import '@alanwilliams/ui/styles.css'
 Apps receive the shared code during their build. They do not load CSS or
 JavaScript from the Platform website at runtime.
 
+## Shared Package Development Workflow
+Before committing a shared UI package release, bump and build it with Node 24
+in Docker from the `alanwilliams-ui` repository root:
+
+``` bash
+docker run --rm \
+  -v "$PWD":/app \
+  -w /app \
+  node:24-alpine \
+  npm version patch --no-git-tag-version
+  ```
+Then:
+``` bash
+docker run --rm \
+  -v "$PWD:/app" \
+  -w /app \
+  node:24-alpine \
+  sh -c 'npm ci && npm run build'
+```
+
 ## Initial Migration Plan
 
 The initial implementation should proceed in this order:
@@ -222,7 +231,7 @@ Implementation and publishing setup are the next steps.
 ## September 2026 Shared Identity / Theme Milestone
 
 The package is now consumed by Platform and Agenda as `@ugotalan2/ui`. The
-current proven Agenda integration is `0.5.15`.
+current proven Agenda integration is `0.5.17`.
 
 Shared UI now includes the reusable `PlatformIdentityGate` and Platform
 onboarding redirect helper. The gate receives identity state from the consumer;
@@ -240,7 +249,7 @@ the public barrel when doing so could create circular imports.
 
 ## Late September 2026 Current Shared UI Baseline
 
-Platform and Agenda now consume `@ugotalan2/ui@0.5.15`.
+Platform and Agenda now consume `@ugotalan2/ui@0.5.17`.
 
 The shared package currently includes the common shell/navigation/theme system,
 `ModalShell`, account-menu identity presentation, signed-out appearance
@@ -256,7 +265,7 @@ aw-btn-menu        -> quiet action-menu trigger
 ```
 
 The package continues to own presentation only. Clerk sessions, Platform Person
-state, cross-domain identity handoff policy, return-destination validation, and
+state, cross-app authentication/navigation policy, return-destination validation, and
 app authorization remain outside the UI package.
 
 The old assumption that a missing-Person redirect can always send only the app
@@ -265,30 +274,3 @@ full original URL. Any future shared identity-navigation helper must accept the
 consumer's intended full return destination rather than reconstructing it from
 `window.location.origin`.
 
-
-
-## Shared Package Development Workflow
-
-Before committing a shared UI package release, bump and build it with Node 24
-in Docker from the `alanwilliams-ui` repository root:
-
-``` bash
-docker run --rm \
-  -v "$PWD":/app \
-  -w /app \
-  node:24-alpine \
-  npm version patch --no-git-tag-version
-```
-
-Then:
-
-``` bash
-docker run --rm \
-  -v "$PWD:/app" \
-  -w /app \
-  node:24-alpine \
-  sh -c 'npm ci && npm run build'
-```
-
-The bind-mounted build writes the publishable `dist` back to the repository so
-it can be verified before commit/push and package publication.
